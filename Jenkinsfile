@@ -1,10 +1,10 @@
 pipeline {
     agent any
-    
+
     stages {
        
         stage('Build') {
-              agent {
+            agent {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
@@ -22,18 +22,29 @@ pipeline {
             }
         }
          stage('Test') {
-           
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
             steps {
                 sh '''
-                    echo 'test start'
-                    if test -f ./build/index.html;
+                   if test -f ./build/index.html;
                         then
                             echo "build good!!"
                         else
                             echo "build bad!!"
                     fi
+
+                    npm test
                 '''
             }
+        }
+    }
+    post {
+        always {
+            junit 'test-results/junit.xml'
         }
     }
 }
