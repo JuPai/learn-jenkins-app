@@ -10,6 +10,7 @@ pipeline {
     environment {
         // CRA / react-scripts 在 CI 需要這個，否則 npm test 會進 watch mode 卡住
         CI = 'true'
+        NETLIFY_SITE_ID = '402308f3-0387-4a82-8a2a-bfff6095c34d'
     }
 
     stages {
@@ -133,6 +134,7 @@ pipeline {
                 sh '''
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
+                    echo $NETLIFY_SITE_ID
                 '''
             }
         }
