@@ -145,5 +145,39 @@ pipeline {
                 '''
             }
         }
+
+        stage('Prod E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.55.0-noble'
+                            reuseNode true
+                        }
+                    }
+                    environment {
+                        // 不同 libc（noble 是 glibc，alpine 是 musl），cache 分開放
+                        npm_config_cache = "${WORKSPACE}/.npm-cache-noble"
+                        CI_ENVIRONMENT_URL = 'https://regal-raindrop-a06898.netlify.app/'
+                    }
+                    steps {
+                        sh '''
+                            npx playwright test --reporter=html
+                        '''
+                    }
+                    post {
+                        always {
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                icon: '',
+                                keepAll: false,
+                                reportDir: 'playwright-report',
+                                reportFiles: 'index.html',
+                                reportName: 'playwright E2E Report',
+                                reportTitles: '',
+                                useWrapperFileDirectly: true
+                            ])
+                        }
+                    }
+                }
     }
 }
