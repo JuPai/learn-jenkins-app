@@ -148,7 +148,7 @@ pipeline {
         }
 
         stage('Approval') {
-            step {
+            steps {
                 timeout(1) {
                     input message: 'Ready to deploy?', ok: 'Deploy!'
                 }
