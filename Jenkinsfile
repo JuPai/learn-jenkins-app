@@ -140,7 +140,7 @@ pipeline {
                     echo "Deploy staging site id $NETLIFY_SITE_ID"
 
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir build --no-build --json 
+                    node_modules/.bin/netlify deploy --dir build --no-build --json  > deploy-output.json
                     node_modules/.bin/node-jq -r './deploy_url' deploy-output.json
 
                     echo "test pulling"
@@ -171,8 +171,7 @@ pipeline {
                     echo "Deploy site id $NETLIFY_SITE_ID"
 
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir build --prod --no-build --json > deploy-output.json
-                    node_modules/.bin/node-jq -r '.delopy_url' deploy-output.json
+                    node_modules/.bin/netlify deploy --dir build --prod --no-build
 
                     echo "test pulling"
                 '''
